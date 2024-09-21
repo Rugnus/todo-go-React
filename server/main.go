@@ -54,11 +54,27 @@ func main() {
 
 		for i, t := range todos {
 			if t.ID == id {
-				todos[i].Done = true
+				todos[i].Done = !todos[i].Done
 				break
 			}
 		}
 
+		return c.JSON(todos)
+	})
+
+	app.Delete("api/todos/:id/delete", func(c *fiber.Ctx) error {
+		id, err := c.ParamsInt("id")
+
+		if err != nil {
+			return c.Status(401).SendString("Invalid ID")
+		}
+
+		for i, t := range todos {
+			if t.ID == id {
+				todos = append(todos[:i], todos[i+1:]...)
+				break
+			}
+		}
 		return c.JSON(todos)
 	})
 

@@ -1,5 +1,5 @@
 import { Box, List, ListItem, ThemeIcon } from "@mantine/core";
-import { CheckCircleFillIcon } from "@primer/octicons-react";
+import { CheckCircleFillIcon, DiffRemovedIcon } from "@primer/octicons-react";
 import useSWR from "swr";
 import AddTodo from "./components/AddTodo";
 import { ENDPOINT } from "./constants";
@@ -28,16 +28,24 @@ function App() {
     mutate(updated);
   }
 
+  async function removeTodoById(id: number) {
+    const updated = await fetch(`${ENDPOINT}/api/todos/${id}/delete`, {
+      method: "DELETE",
+    }).then((r) => r.json());
+
+    mutate(updated);
+  }
+
   return (
     <Box
-      sx={(theme) => ({
-        padding: "2rem",
-        width: "100%",
-        maxWidth: "40rem",
-        margin: "0 auto",
-      })}
+      ml={"auto"}
+      mr={"auto"}
+      mt={"0"}
+      mb={"0"}
+      maw={"40rem"}
+      w={"100%"}
+      p={"2rem"}
     >
-      {JSON.stringify(data)}
       <List spacing="xs" size="sm" mb={12} center>
         {data?.map((todo) => {
           return (
@@ -57,6 +65,14 @@ function App() {
               }
             >
               {todo.title}
+              <ThemeIcon
+                color="teal"
+                size={24}
+                radius={"xl"}
+                onClick={() => removeTodoById(todo.id)}
+              >
+                <DiffRemovedIcon size={20} />
+              </ThemeIcon>
             </ListItem>
           );
         })}
