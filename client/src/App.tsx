@@ -30,14 +30,14 @@ function App() {
 
   return (
     <Box
-      sx={(theme) => ({
-        padding: "2rem",
-        width: "100%",
-        maxWidth: "40rem",
-        margin: "0 auto",
-      })}
+      ml={"auto"}
+      mr={"auto"}
+      mt={"0"}
+      mb={"0"}
+      maw={"40rem"}
+      w={"100%"}
+      p={"2rem"}
     >
-      {JSON.stringify(data)}
       <List spacing="xs" size="sm" mb={12} center>
         {data?.map((todo) => {
           return (
