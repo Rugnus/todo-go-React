@@ -1,4 +1,5 @@
-import { Box, List, ListItem } from "@mantine/core";
+import { Box, List, ListItem, ThemeIcon } from "@mantine/core";
+import { CheckCircleFillIcon } from "@primer/octicons-react";
 import useSWR from "swr";
 import AddTodo from "./components/AddTodo";
 import { ENDPOINT } from "./constants";
@@ -19,6 +20,14 @@ const fetcher = (url: string) => {
 function App() {
   const { data, mutate } = useSWR<Todo[]>("api/todos", fetcher);
 
+  async function markTodoAsDone(id: number) {
+    const updated = await fetch(`${ENDPOINT}/api/todos/${id}/done`, {
+      method: "PATCH",
+    }).then((r) => r.json());
+
+    mutate(updated);
+  }
+
   return (
     <Box
       sx={(theme) => ({
@@ -31,7 +40,25 @@ function App() {
       {JSON.stringify(data)}
       <List spacing="xs" size="sm" mb={12} center>
         {data?.map((todo) => {
-          return <ListItem key={`todo__${todo.id}`}>{todo.title}</ListItem>;
+          return (
+            <ListItem
+              key={`todo__${todo.id}`}
+              onClick={() => markTodoAsDone(todo.id)}
+              icon={
+                todo.done ? (
+                  <ThemeIcon color="teal" size={24} radius={"xl"}>
+                    <CheckCircleFillIcon size={20} />
+                  </ThemeIcon>
+                ) : (
+                  <ThemeIcon color="grey" size={24} radius={"xl"}>
+                    <CheckCircleFillIcon size={20} />
+                  </ThemeIcon>
+                )
+              }
+            >
+              {todo.title}
+            </ListItem>
+          );
         })}
       </List>
       <AddTodo mutate={mutate} />
